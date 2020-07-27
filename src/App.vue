@@ -23,7 +23,7 @@
             <span class='result-text' >{{value.name}}</span>
             <span class='result-text' >{{value.id}}</span>
           </div>
-          <button class='result-copy' @click='copy(value.id)' v-if='value.id != "X"'>복사하기</button>
+          <button class='result-copy' @click='copy(value.id)'  :style="{'opacity' : (value.id != 'X')*1}">복사하기</button>
       </div>
     </div>
   </div>
@@ -70,6 +70,7 @@ export default {
         let cssLength = dom.querySelectorAll('.basicList_depth__2QIie>.basicList_category__wVevj').length
         let tempCategoryId = dom.querySelectorAll('.basicList_depth__2QIie>.basicList_category__wVevj')[cssLength-1].getAttribute("href")
         let categoryId = tempCategoryId.split('=').pop()
+        
 
         this.result[0] = {
           store : '네이버',
@@ -263,7 +264,7 @@ position: absolute;
 
 .result-text-wrap {
   display: flex;
-  min-width: 300px;
+  min-width: 450px;
   justify-content: space-between;
   width:100%;
 }

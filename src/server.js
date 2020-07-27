@@ -33,8 +33,11 @@ nodeApp.post('/naver', async (req, res) => {
                                                     'X-Naver-Client-Secret' : 'h724rxl5b4',
                                                 }
                                             })
+
+                                            
         
         let item = naverApiRes.data.items[0]
+        
         let categoryName = ''
     
         for(let i = 1; i < 5; i ++) {
@@ -48,10 +51,13 @@ nodeApp.post('/naver', async (req, res) => {
         categoryName = categoryName.join('')
     
         // cateogry id 
-        let itemTitle = item.title
+        let tempItemTitle = item.title
+
+        let itemTitle = tempItemTitle.replace(/(<([^>]+)>)/ig,"");
+
         let itemTitleEncoded = encodeURI(itemTitle)
         let itmeSearchUrl = 'https://search.shopping.naver.com/search/all?query='
-    
+
         let tempCategoryId = await axios.get(itmeSearchUrl + itemTitleEncoded, {
                             headers : {
                                 'User-Agent' : 'Mozila/5.0',
@@ -59,14 +65,14 @@ nodeApp.post('/naver', async (req, res) => {
                             }
                         })
     
-    
         res.json(
             {   
                 categoryName : categoryName,
                 categoryId : tempCategoryId.data,
             }
         )
-    } catch {
+    } catch (err) {
+        console.log(err)
         res.status(400).end()
     }
 })
