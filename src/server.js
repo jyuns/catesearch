@@ -21,50 +21,54 @@ nodeApp.post('/naver', async (req, res) => {
 
     let encodedQuery = encodeURI(query)
 
-    let naverApiUrl = 'https://openapi.naver.com/v1/search/shop.json?query=' + encodedQuery;
+    try {
+        let naverApiUrl = 'https://openapi.naver.com/v1/search/shop.json?query=' + encodedQuery;
 
-    let naverApiRes = await axios.get(naverApiUrl, {
-                                            headers : {
-                                                'User-Agent' : 'curl/7.49.1',
-                                                'Accept' : '*',
-                                                'Host' : 'openapi.naver.com',
-                                                'X-Naver-Client-Id' : 'zVbXDf2uai2vJIsdWb3I',
-                                                'X-Naver-Client-Secret' : 'h724rxl5b4',
-                                            }
-                                        })
+        let naverApiRes = await axios.get(naverApiUrl, {
+                                                headers : {
+                                                    'User-Agent' : 'curl/7.49.1',
+                                                    'Accept' : '*',
+                                                    'Host' : 'openapi.naver.com',
+                                                    'X-Naver-Client-Id' : 'zVbXDf2uai2vJIsdWb3I',
+                                                    'X-Naver-Client-Secret' : 'h724rxl5b4',
+                                                }
+                                            })
+        
+        let item = naverApiRes.data.items[0]
+        let categoryName = ''
     
-    let item = naverApiRes.data.items[0]
-    let categoryName = ''
-
-    for(let i = 1; i < 5; i ++) {
-        if(item['category' + i] == undefined) continue
-        else categoryName = categoryName + '>' + item['category' + i]
-    }
-    
-    categoryName = categoryName.split('')
-    categoryName.shift()
-    categoryName.pop()
-    categoryName = categoryName.join('')
-
-    // cateogry id 
-    let itemTitle = item.title
-    let itemTitleEncoded = encodeURI(itemTitle)
-    let itmeSearchUrl = 'https://search.shopping.naver.com/search/all?query='
-
-    let tempCategoryId = await axios.get(itmeSearchUrl + itemTitleEncoded, {
-                        headers : {
-                            'User-Agent' : 'Mozila/5.0',
-                            'Accept' : '*',
-                        }
-                    })
-
-
-    res.json(
-        {   
-            categoryName : categoryName,
-            categoryId : tempCategoryId.data,
+        for(let i = 1; i < 5; i ++) {
+            if(item['category' + i] == undefined) continue
+            else categoryName = categoryName + '>' + item['category' + i]
         }
-    )
+        
+        categoryName = categoryName.split('')
+        categoryName.shift()
+        categoryName.pop()
+        categoryName = categoryName.join('')
+    
+        // cateogry id 
+        let itemTitle = item.title
+        let itemTitleEncoded = encodeURI(itemTitle)
+        let itmeSearchUrl = 'https://search.shopping.naver.com/search/all?query='
+    
+        let tempCategoryId = await axios.get(itmeSearchUrl + itemTitleEncoded, {
+                            headers : {
+                                'User-Agent' : 'Mozila/5.0',
+                                'Accept' : '*',
+                            }
+                        })
+    
+    
+        res.json(
+            {   
+                categoryName : categoryName,
+                categoryId : tempCategoryId.data,
+            }
+        )
+    } catch {
+        res.status(400).end()
+    }
 })
 
 const https = require('https');
@@ -152,24 +156,28 @@ nodeApp.post('/11st', async (req, res) => {
     let urlEncodedQuery = encodedQuery.split('%').join('%25')
 
       
-    let PIDReq = await axios.get('http://search.11st.co.kr/Search.tmall?method=getSearchFilterAjax&kwd=' + urlEncodedQuery + '&selectedFilterYn=Y&sellerNos=&pageNo=1&fromPrice=&toPrice=&excptKwd=&pageNum=1&pageSize=80&researchFlag=false&lCtgrNo=0&mCtgrNo=0&sCtgrNo=0&dCtgrNo=0&viewType=L&minPrice=&maxPrice=&previousKwd=&previousExcptKwd=&sortCd=NP&firstInputKwd=%C3%BB%B9%D9%C1%F6&catalogYN=N&brandCd=&attributes=&imgAttributes=&benefits=&verticalType=GLOBAL_DIRECT&dispCtgrNo=&dispCtgrType=&officialCertificationSeller=&day11Yn=N&engineRequestUrl=', {
-        responseType : 'arraybuffer',
-        responseEncoding : 'binary'
-    })
+    try {
+        let PIDReq = await axios.get('http://search.11st.co.kr/Search.tmall?method=getSearchFilterAjax&kwd=' + urlEncodedQuery + '&selectedFilterYn=Y&sellerNos=&pageNo=1&fromPrice=&toPrice=&excptKwd=&pageNum=1&pageSize=80&researchFlag=false&lCtgrNo=0&mCtgrNo=0&sCtgrNo=0&dCtgrNo=0&viewType=L&minPrice=&maxPrice=&previousKwd=&previousExcptKwd=&sortCd=NP&firstInputKwd=%C3%BB%B9%D9%C1%F6&catalogYN=N&brandCd=&attributes=&imgAttributes=&benefits=&verticalType=GLOBAL_DIRECT&dispCtgrNo=&dispCtgrType=&officialCertificationSeller=&day11Yn=N&engineRequestUrl=', {
+            responseType : 'arraybuffer',
+            responseEncoding : 'binary'
+        })
+        
+        let decodePIDReq = iconv.decode(PIDReq.data, 'utf8')
+        let JSONdecodePIDReq = JSON.parse(decodePIDReq)
     
-    let decodePIDReq = iconv.decode(PIDReq.data, 'utf8')
-    let JSONdecodePIDReq = JSON.parse(decodePIDReq)
-
-    let PID = JSONdecodePIDReq.commonPrdList.items[0].prdNo
-
-    let categoryReq = await axios.get('http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=' + PID, {
-        responseType : 'arraybuffer',
-        responseEncoding : 'binary'
-    })
-
-    let decodeCategoryReq = iconv.decode(categoryReq.data, 'euc-kr')
-
-    res.send(decodeCategoryReq)
+        let PID = JSONdecodePIDReq.commonPrdList.items[0].prdNo
+    
+        let categoryReq = await axios.get('http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=' + PID, {
+            responseType : 'arraybuffer',
+            responseEncoding : 'binary'
+        })
+    
+        let decodeCategoryReq = iconv.decode(categoryReq.data, 'euc-kr')
+    
+        res.send(decodeCategoryReq)
+    } catch {
+        res.status(400).end()
+    }
 
 })
 
