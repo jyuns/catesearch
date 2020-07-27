@@ -155,9 +155,8 @@ nodeApp.post('/11st', async (req, res) => {
     let encodedQuery = encodeURI(query)
     let urlEncodedQuery = encodedQuery.split('%').join('%25')
 
-      
-    try {
-        let PIDReq = await axios.get('http://search.11st.co.kr/Search.tmall?method=getSearchFilterAjax&kwd=' + urlEncodedQuery + '&selectedFilterYn=Y&sellerNos=&pageNo=1&fromPrice=&toPrice=&excptKwd=&pageNum=1&pageSize=80&researchFlag=false&lCtgrNo=0&mCtgrNo=0&sCtgrNo=0&dCtgrNo=0&viewType=L&minPrice=&maxPrice=&previousKwd=&previousExcptKwd=&sortCd=NP&firstInputKwd=%C3%BB%B9%D9%C1%F6&catalogYN=N&brandCd=&attributes=&imgAttributes=&benefits=&verticalType=GLOBAL_DIRECT&dispCtgrNo=&dispCtgrType=&officialCertificationSeller=&day11Yn=N&engineRequestUrl=', {
+    try {                                                                                                                         
+        let PIDReq = await axios.get('http://search.11st.co.kr/Search.tmall?method=getSearchFilterAjax&kwd=' + urlEncodedQuery + '&selectedFilterYn=Y&sellerNos=&pageNo=1&fromPrice=&toPrice=&excptKwd=&pageNum=1&pageSize=80&researchFlag=false&lCtgrNo=0&mCtgrNo=0&sCtgrNo=0&dCtgrNo=0&viewType=L&minPrice=&maxPrice=&previousKwd=&previousExcptKwd=&sortCd=NP&firstInputKwd=%C3%BB%B9%D9%C1%F6&catalogYN=N&brandCd=&attributes=&imgAttributes=&benefits=&verticalType=&dispCtgrNo=8286&dispCtgrType=&officialCertificationSeller=&day11Yn=N&engineRequestUrl=', {
             responseType : 'arraybuffer',
             responseEncoding : 'binary'
         })

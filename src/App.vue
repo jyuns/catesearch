@@ -118,7 +118,7 @@ export default {
         let tempCategoryNameLen = tempCategoryNameList.length
         let categoryName = ''
         let categoryId
-        console.log(tempCategoryNameList)
+        
         for( let i = 0; i < tempCategoryNameLen; i++) {
           // 한글 외의 텍스트 제거, 카테고리 4개 이상일 시 발생되는 에러 해결
           let regex= /[a-z0-9]|[\]{}()<>?|`~!@#$%^&*-_+=,.;:"'\\]/g;
