@@ -57,6 +57,7 @@ export default {
 
     async search() {
 
+      if(this.kwd.length == 0) return
       this.loading = true
 
       // Get naver category ID & Name
@@ -71,7 +72,6 @@ export default {
         let tempCategoryId = dom.querySelectorAll('.basicList_depth__2QIie>.basicList_category__wVevj')[cssLength-1].getAttribute("href")
         let categoryId = tempCategoryId.split('=').pop()
         
-
         this.result[0] = {
           store : '네이버',
           id : categoryId,
@@ -115,7 +115,8 @@ export default {
 
         let dom = new DOMParser().parseFromString(data11st.data, 'text/html')
         
-        let tempCategoryNameList = dom.querySelectorAll('.location_box')
+        let tempCategoryNameList = dom.querySelectorAll('div.pdp_category_wrap>div.dropdown_selected>em.selected')
+        console.log(tempCategoryNameList)
         let tempCategoryNameLen = tempCategoryNameList.length
         let categoryName = ''
         let categoryId
@@ -127,21 +128,24 @@ export default {
           let tmpResult = tmp.replace(regex, '')
 
           categoryName = categoryName + '>' + tmpResult
-        }
+          
+        }  
 
-        categoryId = tempCategoryNameList[tempCategoryNameLen - 1].querySelector('#RefCtgrNo').getAttribute('value')
+        categoryId = dom.querySelector('input[name=dispCtgrNo]').getAttribute('value')
         
         categoryName = categoryName.split('')
         categoryName.shift()
-        categoryName.pop()
+        
         categoryName = categoryName.join('')
+        
 
         this.result[2] = {
           store : '11번가',
           id : categoryId,
           name : categoryName
         }  
-      } catch {
+      } catch(err) {
+        console.log(err)
         this.result[2] = {
           store : '11번가',
           id : 'X',

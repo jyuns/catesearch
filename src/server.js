@@ -47,7 +47,6 @@ nodeApp.post('/naver', async (req, res) => {
         
         categoryName = categoryName.split('')
         categoryName.shift()
-        categoryName.pop()
         categoryName = categoryName.join('')
     
         // cateogry id 
@@ -172,14 +171,10 @@ nodeApp.post('/11st', async (req, res) => {
     
         let PID = JSONdecodePIDReq.commonPrdList.items[0].prdNo
     
-        let categoryReq = await axios.get('http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=' + PID, {
-            responseType : 'arraybuffer',
-            responseEncoding : 'binary'
-        })
-    
-        let decodeCategoryReq = iconv.decode(categoryReq.data, 'euc-kr')
-    
-        res.send(decodeCategoryReq)
+        let categoryReq = await axios.get('http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=' + PID)
+
+        res.send(categoryReq.data)
+        
     } catch {
         res.status(400).end()
     }
